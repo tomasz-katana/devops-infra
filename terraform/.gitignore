@@ -1,0 +1,9 @@
+# Terraform state describes every managed resource and may contain
+# sensitive values. It must never be committed.
+*.tfstate
+*.tfstate.*
+.terraform/
+crash.log
+
+# Note: .terraform.lock.hcl IS committed on purpose - it pins exact
+# provider versions so every run uses the same dependencies.
