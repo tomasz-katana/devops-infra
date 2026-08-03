@@ -8,7 +8,6 @@ terraform {
   }
 }
 
-# Pull the image onto the server.
 resource "docker_image" "this" {
   name = var.image
 }
@@ -21,10 +20,8 @@ resource "docker_container" "this" {
   # container. Using the tag alone would leave the old container running.
   image = docker_image.this.image_id
 
-  restart = var.restart_policy
-
-  # Dynamic blocks generate as many blocks as there are list entries,
-  # so one module handles containers with any number of ports or volumes.
+  restart    = var.restart_policy
+  privileged = var.privileged
 
   dynamic "networks_advanced" {
     for_each = var.networks
@@ -41,7 +38,7 @@ resource "docker_container" "this" {
     }
   }
 
-  # Named volumes - persistent data that survives container recreation
+  # Named volumes - persistent data surviving container recreation
   dynamic "volumes" {
     for_each = var.volumes
     content {
@@ -50,7 +47,7 @@ resource "docker_container" "this" {
     }
   }
 
-  # Bind mounts - configuration files supplied from the host
+  # Bind mounts - configuration files from the host
   dynamic "volumes" {
     for_each = var.host_mounts
     content {

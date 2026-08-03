@@ -1,0 +1,70 @@
+---
+# ============================================================
+# PLAYBOOK: deploy monitoring configuration files
+#
+# Terraform later mounts these files into the containers.
+# SMTP credentials are read from the environment, so no secret
+# is ever stored in the repository.
+# ============================================================
+
+- name: Deploy monitoring configuration
+  hosts: servers
+  become: true
+
+  vars:
+    project_dir: /opt/devops
+    app_user: devops
+    smtp_user: "{{ lookup('env', 'SMTP_USER') }}"
+    smtp_password: "{{ lookup('env', 'SMTP_PASSWORD') }}"
+    alert_email_to: "{{ lookup('env', 'ALERT_EMAIL_TO') }}"
+
+    # Numeric UID used by the Alertmanager image. Container processes see
+    # numeric owners, not names - the "devops" account does not exist
+    # inside the container, so ownership must be expressed as a number.
+    alertmanager_uid: "65534"
+
+  tasks:
+
+    - name: Fail early when notification credentials are missing
+      ansible.builtin.assert:
+        that:
+          - smtp_user | length > 0
+          - smtp_password | length > 0
+          - alert_email_to | length > 0
+        fail_msg: >-
+          SMTP_USER, SMTP_PASSWORD and ALERT_EMAIL_TO must be exported
+          before running this playbook.
+
+    - name: Create monitoring directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: "0755"
+      loop:
+        - "{{ project_dir }}/monitoring"
+        - "{{ project_dir }}/monitoring/grafana"
+
+    - name: Copy static monitoring configuration
+      ansible.builtin.copy:
+        src: "files/monitoring/{{ item }}"
+        dest: "{{ project_dir }}/monitoring/{{ item }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: "0644"
+      loop:
+        - prometheus.yml
+        - alerts.yml
+        - blackbox.yml
+        - grafana/datasources.yml
+      # These files hold no secrets, so world-readable is acceptable
+
+    - name: Render Alertmanager configuration with SMTP credentials
+      ansible.builtin.template:
+        src: files/monitoring/alertmanager.yml.j2
+        dest: "{{ project_dir }}/monitoring/alertmanager.yml"
+        owner: "{{ alertmanager_uid }}"
+        group: "{{ alertmanager_uid }}"
+        mode: "0400"    # read-only, and only for the container's own user
+      no_log: true      # keep the rendered secret out of the Ansible log

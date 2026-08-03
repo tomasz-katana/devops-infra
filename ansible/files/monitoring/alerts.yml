@@ -1,0 +1,55 @@
+# Alert rules evaluated by Prometheus.
+# The "for" clause prevents noise from short-lived spikes.
+
+groups:
+
+  - name: application
+    rules:
+
+      - alert: ApplicationDown
+        expr: probe_success == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Application is not responding"
+          description: "HTTP probe of {{ $labels.instance }} has been failing for over 1 minute."
+
+      - alert: ApplicationSlow
+        expr: probe_duration_seconds > 2
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Application response time is high"
+          description: "Probe of {{ $labels.instance }} takes over 2 seconds."
+
+  - name: infrastructure
+    rules:
+
+      - alert: HighMemoryUsage
+        expr: (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) > 0.90
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Memory usage above 90%"
+          description: "Available memory has been below 10% for 5 minutes."
+
+      - alert: LowDiskSpace
+        expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) < 0.15
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Less than 15% disk space left"
+          description: "Root filesystem is running out of space."
+
+      - alert: TargetDown
+        expr: up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Monitoring target is down"
+          description: "Prometheus cannot scrape {{ $labels.job }} on {{ $labels.instance }}."

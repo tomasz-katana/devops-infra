@@ -1,0 +1,6 @@
+---
+# Entry point: full server configuration in the correct order.
+# Usage:  ansible-playbook site.yml
+
+- import_playbook: playbook.yml    # operating system, Docker, firewall
+- import_playbook: monitoring.yml  # monitoring configuration files

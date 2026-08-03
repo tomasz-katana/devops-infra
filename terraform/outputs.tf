@@ -19,3 +19,18 @@ output "volumes" {
   description = "Docker volumes managed by Terraform"
   value       = [docker_volume.prometheus_data.name, docker_volume.grafana_data.name]
 }
+
+output "grafana_url" {
+  description = "Grafana dashboard address"
+  value       = "http://${var.server_ip}:3000"
+}
+
+output "prometheus_url" {
+  description = "Prometheus web interface"
+  value       = "http://${var.server_ip}:9090"
+}
+
+output "alertmanager_url" {
+  description = "Alertmanager web interface"
+  value       = "http://${var.server_ip}:9093"
+}

@@ -1,0 +1,50 @@
+# Prometheus configuration.
+# Managed by Ansible - do not edit on the server.
+
+global:
+  scrape_interval: 15s      # how often targets are polled
+  evaluation_interval: 15s  # how often alert rules are evaluated
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['alertmanager:9093']
+
+rule_files:
+  - /etc/prometheus/alerts.yml
+
+scrape_configs:
+
+  # Prometheus monitors itself
+  - job_name: prometheus
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # INFRASTRUCTURE: host metrics (CPU, memory, disk, network)
+  - job_name: node
+    static_configs:
+      - targets: ['node-exporter:9100']
+
+  # INFRASTRUCTURE: per-container resource usage
+  - job_name: cadvisor
+    static_configs:
+      - targets: ['cadvisor:8080']
+
+  # APPLICATION: availability and response time, probed from outside
+  - job_name: blackbox-http
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - http://app:8080/health
+    relabel_configs:
+      # Pass the probed URL to the exporter as the "target" parameter
+      - source_labels: [__address__]
+        target_label: __param_target
+      # Keep the probed URL as the instance label
+      - source_labels: [__param_target]
+        target_label: instance
+      # Send the request to the exporter, not to the probed address
+      - target_label: __address__
+        replacement: blackbox-exporter:9115

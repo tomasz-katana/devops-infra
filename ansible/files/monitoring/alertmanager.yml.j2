@@ -1,0 +1,25 @@
+# Alertmanager configuration.
+# Rendered by Ansible - credentials are injected from the environment
+# and never stored in the repository.
+
+global:
+  # Gmail SMTP relay. Port 587 uses STARTTLS, so the connection is
+  # encrypted before credentials are sent.
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: '{{ smtp_user }}'
+  smtp_auth_username: '{{ smtp_user }}'
+  smtp_auth_password: '{{ smtp_password }}'
+  smtp_require_tls: true
+
+route:
+  receiver: email
+  group_by: ['alertname']
+  group_wait: 10s        # wait before sending the first notification
+  group_interval: 1m     # wait before sending an update for the same group
+  repeat_interval: 4h    # how often to repeat a still-firing alert
+
+receivers:
+  - name: email
+    email_configs:
+      - to: '{{ alert_email_to }}'
+        send_resolved: true   # also notify when the problem is over

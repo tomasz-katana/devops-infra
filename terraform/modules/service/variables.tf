@@ -61,3 +61,9 @@ variable "restart_policy" {
   type        = string
   default     = "unless-stopped"
 }
+
+variable "privileged" {
+  description = "Grant extended host access. Required by cAdvisor to read container runtime data."
+  type        = bool
+  default     = false
+}

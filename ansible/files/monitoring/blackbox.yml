@@ -1,0 +1,11 @@
+# Blackbox exporter probe definitions.
+
+modules:
+  http_2xx:
+    prober: http
+    timeout: 5s
+    http:
+      method: GET
+      valid_status_codes: []      # empty means any 2xx counts as success
+      preferred_ip_protocol: ip4
+      follow_redirects: true
