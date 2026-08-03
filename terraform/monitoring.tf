@@ -157,6 +157,16 @@ module "cadvisor" {
     { host_path = "/sys", container_path = "/sys", read_only = true },
     { host_path = "/var/lib/docker", container_path = "/var/lib/docker", read_only = true },
   ]
+
+  # cAdvisor scans every container once per second by default, which
+  # starves a small virtual machine. These flags reduce its footprint:
+  # longer housekeeping interval, containers only, and the most
+  # expensive metric collectors disabled.
+  command = [
+    "--housekeeping_interval=30s",
+    "--docker_only=true",
+    "--disable_metrics=disk,diskIO,tcp,udp,percpu,sched,process,hugetlb,referenced_memory,cpu_topology,resctrl",
+  ]
 }
 
 # ------------------------------------------------------------
