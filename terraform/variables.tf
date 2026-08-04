@@ -65,7 +65,7 @@ variable "image_node_exporter" {
 
 variable "image_cadvisor" {
   type    = string
-  default = "gcr.io/cadvisor/cadvisor:v0.49.1"
+  default = "gcr.io/cadvisor/cadvisor:latest"
 }
 
 variable "image_blackbox" {
