@@ -63,7 +63,8 @@ ansible/
   playbook.yml             operating system configuration
   monitoring.yml           monitoring configuration files
   site.yml                 entry point importing both playbooks
-  files/monitoring/        Prometheus, Alertmanager, blackbox, Grafana configs
+  files/monitoring/        Prometheus, Alertmanager, blackbox, Loki, Promtail configs
+  files/monitoring/grafana/dashboards/   dashboard definitions kept as code
 
 terraform/
   versions.tf              pinned Terraform and provider versions
@@ -72,6 +73,7 @@ terraform/
   terraform.tfvars         values for this environment
   main.tf                  networks, volumes, application container
   monitoring.tf            monitoring containers
+  logging.tf               log aggregation containers
   outputs.tf               service URLs
   modules/service/         reusable container module
 ```
@@ -207,6 +209,7 @@ application:
 | Infrastructure | node-exporter | CPU, memory, disk, network |
 | Infrastructure | cAdvisor | per-container resource usage |
 | Application | blackbox-exporter | HTTP availability and response time |
+| Logs | Promtail into Loki | log lines from every container, labelled by container name |
 
 Prometheus scrapes every 15 seconds and evaluates five alert rules. Alerts are
 delivered by email through Alertmanager, including a resolution message once
@@ -228,6 +231,27 @@ inside `monitoring-net`, which keeps the exposed surface minimal.
 - secrets are supplied through environment variables and GitHub Secrets
 - the Alertmanager configuration file, which contains SMTP credentials, is
   readable only by the container's own user (mode 0400)
+
+### Dashboards as code
+
+Grafana data sources and the project dashboard are provisioned from files in
+this repository, so a freshly created Grafana container is immediately usable
+with no manual configuration. Community dashboards for node-exporter and
+blackbox-exporter are imported separately by ID, as there is no value in
+recreating well-maintained work.
+
+## Known limitations
+
+**Per-container metrics from cAdvisor are unavailable.** Docker 29 introduced a
+storage driver based on the containerd snapshotter, while cAdvisor looks for
+layer metadata in the legacy `overlay2` layout. Its logs show repeated attempts
+to open paths that no longer exist, and a newer cAdvisor release behaves the
+same. Switching Docker back to `overlay2` would fix it but discards all local
+images, which was not justified at this stage of the project.
+
+The impact is limited: infrastructure metrics come from node-exporter and
+application availability from blackbox-exporter, so no monitoring requirement
+depends on cAdvisor.
 
 ## Rollback
 
