@@ -45,6 +45,7 @@
       loop:
         - "{{ project_dir }}/monitoring"
         - "{{ project_dir }}/monitoring/grafana"
+        - "{{ project_dir }}/monitoring/grafana/dashboards"
 
     - name: Copy static monitoring configuration
       ansible.builtin.copy:
@@ -60,6 +61,8 @@
         - loki.yml
         - promtail.yml
         - grafana/datasources.yml
+        - grafana/dashboard-provider.yml
+        - grafana/dashboards/project-overview.json
       # These files hold no secrets, so world-readable is acceptable
 
     - name: Render Alertmanager configuration with SMTP credentials

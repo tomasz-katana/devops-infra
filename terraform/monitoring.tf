@@ -103,6 +103,16 @@ module "grafana" {
       container_path = "/etc/grafana/provisioning/datasources/datasources.yml"
       read_only      = true
     },
+    {
+      host_path      = "${var.monitoring_dir}/grafana/dashboard-provider.yml"
+      container_path = "/etc/grafana/provisioning/dashboards/dashboard-provider.yml"
+      read_only      = true
+    },
+    {
+      host_path      = "${var.monitoring_dir}/grafana/dashboards"
+      container_path = "/etc/grafana/dashboards"
+      read_only      = true
+    },
   ]
 
   env = [

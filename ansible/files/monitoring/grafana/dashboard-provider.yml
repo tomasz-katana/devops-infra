@@ -1,0 +1,15 @@
+# Tells Grafana to load dashboard definitions from a directory.
+# Dashboards are therefore versioned in Git like any other code.
+
+apiVersion: 1
+
+providers:
+  - name: project
+    orgId: 1
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30   # picks up file changes without a restart
+    allowUiUpdates: true        # experiments in the UI are still possible
+    options:
+      path: /etc/grafana/dashboards
+      foldersFromFilesStructure: false

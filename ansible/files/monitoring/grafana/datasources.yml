@@ -1,10 +1,12 @@
 # Grafana provisioning: data sources come from a file, so a fresh
 # container is usable immediately without manual configuration.
+# Explicit uids let provisioned dashboards reference these sources.
 
 apiVersion: 1
 
 datasources:
   - name: Prometheus
+    uid: prometheus
     type: prometheus
     access: proxy
     url: http://prometheus:9090
@@ -12,6 +14,7 @@ datasources:
     editable: false
 
   - name: Loki
+    uid: loki
     type: loki
     access: proxy
     url: http://loki:3100
