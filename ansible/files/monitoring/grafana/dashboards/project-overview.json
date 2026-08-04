@@ -1,26 +1,49 @@
 {
   "uid": "project-overview",
   "title": "DevOps Project Overview",
-  "tags": ["diploma"],
+  "tags": [
+    "diploma"
+  ],
   "timezone": "browser",
   "schemaVersion": 39,
   "version": 1,
   "refresh": "10s",
-  "time": { "from": "now-30m", "to": "now" },
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
   "panels": [
     {
       "type": "stat",
       "title": "Application availability",
-      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 0 },
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "targets": [
-        { "refId": "A", "expr": "probe_success", "instant": true }
+        {
+          "refId": "A",
+          "expr": "probe_success",
+          "instant": true
+        }
       ],
       "options": {
         "colorMode": "background",
         "graphMode": "none",
         "textMode": "value",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
       },
       "fieldConfig": {
         "defaults": {
@@ -28,8 +51,16 @@
             {
               "type": "value",
               "options": {
-                "0": { "text": "DOWN", "color": "red", "index": 0 },
-                "1": { "text": "UP", "color": "green", "index": 1 }
+                "0": {
+                  "text": "DOWN",
+                  "color": "red",
+                  "index": 0
+                },
+                "1": {
+                  "text": "UP",
+                  "color": "green",
+                  "index": 1
+                }
               }
             }
           ]
@@ -40,15 +71,33 @@
     {
       "type": "stat",
       "title": "Response time",
-      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 0 },
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "targets": [
-        { "refId": "A", "expr": "probe_duration_seconds", "instant": true }
+        {
+          "refId": "A",
+          "expr": "probe_duration_seconds",
+          "instant": true
+        }
       ],
       "options": {
         "colorMode": "value",
         "graphMode": "area",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
       },
       "fieldConfig": {
         "defaults": {
@@ -57,9 +106,18 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "orange", "value": 1 },
-              { "color": "red", "value": 2 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 2
+              }
             ]
           }
         },
@@ -68,39 +126,106 @@
     },
     {
       "type": "stat",
-      "title": "Running containers",
-      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 0 },
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "title": "Active alerts",
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "targets": [
-        { "refId": "A", "expr": "count(container_last_seen{name!=\"\"})", "instant": true }
+        {
+          "refId": "A",
+          "expr": "count(ALERTS{alertstate=\"firing\"}) or vector(0)",
+          "instant": true
+        }
       ],
       "options": {
-        "colorMode": "value",
+        "colorMode": "background",
         "graphMode": "none",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
       },
-      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] }
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
     },
     {
       "type": "stat",
       "title": "Monitoring targets up",
-      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 0 },
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "targets": [
-        { "refId": "A", "expr": "sum(up)", "instant": true }
+        {
+          "refId": "A",
+          "expr": "sum(up)",
+          "instant": true
+        }
       ],
       "options": {
         "colorMode": "value",
         "graphMode": "none",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
       },
-      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] }
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      }
     },
     {
       "type": "timeseries",
       "title": "Server CPU usage",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 5 },
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "targets": [
         {
           "refId": "A",
@@ -109,15 +234,27 @@
         }
       ],
       "fieldConfig": {
-        "defaults": { "unit": "percent", "min": 0, "max": 100 },
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100
+        },
         "overrides": []
       }
     },
     {
       "type": "timeseries",
       "title": "Server memory usage",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 5 },
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "targets": [
         {
           "refId": "A",
@@ -126,34 +263,65 @@
         }
       ],
       "fieldConfig": {
-        "defaults": { "unit": "percent", "min": 0, "max": 100 },
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100
+        },
         "overrides": []
       }
     },
     {
       "type": "timeseries",
-      "title": "CPU usage per container",
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 13 },
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "title": "Network traffic",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 13
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "targets": [
         {
           "refId": "A",
-          "expr": "rate(container_cpu_usage_seconds_total{name!=\"\"}[2m]) * 100",
-          "legendFormat": "{{name}}"
+          "expr": "rate(node_network_receive_bytes_total{device!=\"lo\"}[2m])",
+          "legendFormat": "received {{device}}"
+        },
+        {
+          "refId": "B",
+          "expr": "rate(node_network_transmit_bytes_total{device!=\"lo\"}[2m])",
+          "legendFormat": "sent {{device}}"
         }
       ],
       "fieldConfig": {
-        "defaults": { "unit": "percent", "min": 0 },
+        "defaults": {
+          "unit": "Bps",
+          "min": 0
+        },
         "overrides": []
       }
     },
     {
       "type": "logs",
       "title": "Application logs",
-      "gridPos": { "h": 9, "w": 24, "x": 0, "y": 21 },
-      "datasource": { "type": "loki", "uid": "loki" },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 21
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "loki"
+      },
       "targets": [
-        { "refId": "A", "expr": "{container=\"app\"}" }
+        {
+          "refId": "A",
+          "expr": "{container=\"app\"}"
+        }
       ],
       "options": {
         "showTime": true,
