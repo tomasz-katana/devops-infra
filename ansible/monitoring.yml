@@ -57,6 +57,8 @@
         - prometheus.yml
         - alerts.yml
         - blackbox.yml
+        - loki.yml
+        - promtail.yml
         - grafana/datasources.yml
       # These files hold no secrets, so world-readable is acceptable
 

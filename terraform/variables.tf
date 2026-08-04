@@ -72,3 +72,13 @@ variable "image_blackbox" {
   type    = string
   default = "prom/blackbox-exporter:v0.25.0"
 }
+
+variable "image_loki" {
+  type    = string
+  default = "grafana/loki:2.9.8"
+}
+
+variable "image_promtail" {
+  type    = string
+  default = "grafana/promtail:2.9.8"
+}
