@@ -38,6 +38,8 @@ and runs a full monitoring stack.
 |    +- node-exporter          internal     |
 |    +- cadvisor               internal     |
 |    +- blackbox-exporter      internal     |
+|    +- loki                   internal     |
+|    +- promtail               internal     |
 +----------------+-------------------------+
                  |
                  v
