@@ -5,6 +5,21 @@ server, deploys the application from
 **[golang-helloworld](https://github.com/tomasz-katana/golang-helloworld)**
 and runs a full monitoring stack.
 
+## Project repositories
+
+The project is split into two repositories, each with its own lifecycle:
+
+| Repository | Contents |
+|---|---|
+| **[golang-helloworld](https://github.com/tomasz-katana/golang-helloworld)** | application source, `Dockerfile`, unit tests and the **CI/CD pipeline definition** |
+| **devops-infra** (this repository) | Ansible playbooks, Terraform configuration, monitoring and logging configuration |
+
+The pipeline lives in the application repository because GitHub Actions reacts
+to commits there. On every push to the main branch it builds and publishes a
+container image, then runs the Ansible and Terraform code **from this
+repository** to deploy it. Both parts are therefore needed to understand the
+full picture.
+
 ## Architecture
 
 ```
